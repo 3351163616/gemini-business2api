@@ -51,7 +51,7 @@ class BasicConfig(BaseModel):
     duckmail_base_url: str = Field(default="https://api.duckmail.sbs", description="DuckMail API地址")
     duckmail_api_key: str = Field(default="", description="DuckMail API key")
     duckmail_verify_ssl: bool = Field(default=True, description="DuckMail SSL校验")
-    temp_mail_provider: str = Field(default="moemail", description="临时邮箱提供商: moemail/duckmail/freemail/gptmail")
+    temp_mail_provider: str = Field(default="moemail", description="临时邮箱提供商: moemail/duckmail/freemail/gptmail/outlookmail")
     moemail_base_url: str = Field(default="https://moemail.nanohajimi.mom", description="Moemail API地址")
     moemail_api_key: str = Field(default="", description="Moemail API key")
     moemail_domain: str = Field(default="", description="Moemail 邮箱域名（可选，留空则随机选择）")
@@ -64,11 +64,12 @@ class BasicConfig(BaseModel):
     gptmail_api_key: str = Field(default="", description="GPTMail API key")
     gptmail_verify_ssl: bool = Field(default=True, description="GPTMail SSL校验")
     gptmail_domain: str = Field(default="", description="GPTMail 邮箱域名（可选，留空则随机选择）")
+    outlookmail_base_url: str = Field(default="http://your-outlook-api.com", description="OutlookMail API地址")
     browser_engine: str = Field(default="dp", description="浏览器引擎：uc 或 dp")
     browser_headless: bool = Field(default=False, description="自动化浏览器无头模式")
     refresh_window_hours: int = Field(default=1, ge=0, le=24, description="过期刷新窗口（小时）")
     register_default_count: int = Field(default=1, ge=1, description="默认注册数量")
-    register_domain: str = Field(default="", description="DuckMail 域名（推荐）")
+    register_domain: str = Field(default="", description="默认注册域名（推荐）")
 
 
 class ImageGenerationConfig(BaseModel):
@@ -105,9 +106,6 @@ class RetryConfig(BaseModel):
     videos_rate_limit_cooldown_seconds: int = Field(default=14400, ge=3600, le=86400, description="Videos 429 cooldown (seconds)")
     session_cache_ttl_seconds: int = Field(default=3600, ge=0, le=86400, description="会话缓存时间（秒，0表示禁用缓存）")
     auto_refresh_accounts_seconds: int = Field(default=60, ge=0, le=600, description="自动刷新账号间隔（秒，0禁用）")
-    # 定时刷新配置
-    scheduled_refresh_enabled: bool = Field(default=False, description="是否启用定时刷新任务")
-    scheduled_refresh_interval_minutes: int = Field(default=30, ge=0, le=720, description="定时刷新检测间隔（分钟，0-12小时）")
 
 class PublicDisplayConfig(BaseModel):
     """公开展示配置"""
@@ -217,6 +215,8 @@ class ConfigManager:
             gptmail_base_url=str(basic_data.get("gptmail_base_url") or "https://mail.chatgpt.org.uk").strip(),
             gptmail_api_key=str(basic_data.get("gptmail_api_key") or "").strip(),
             gptmail_verify_ssl=_parse_bool(basic_data.get("gptmail_verify_ssl"), True),
+            gptmail_domain=str(basic_data.get("gptmail_domain") or "").strip(),
+            outlookmail_base_url=str(basic_data.get("outlookmail_base_url") or "http://your-outlook-api.com").strip(),
             browser_engine=basic_data.get("browser_engine") or "dp",
             browser_headless=_parse_bool(basic_data.get("browser_headless"), False),
             refresh_window_hours=int(refresh_window_raw),

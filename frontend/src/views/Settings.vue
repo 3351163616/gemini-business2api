@@ -269,6 +269,20 @@
                   />
                 </template>
 
+                <!-- OutlookMail 配置 -->
+                <template v-if="localSettings.basic.temp_mail_provider === 'outlookmail'">
+                  <label class="block text-xs text-muted-foreground">OutlookMail API</label>
+                  <input
+                    v-model="localSettings.basic.outlookmail_base_url"
+                    type="text"
+                    class="w-full rounded-2xl border border-input bg-background px-3 py-2 text-sm"
+                    placeholder="http://your-outlook-api.com"
+                  />
+                  <div class="rounded-2xl border border-border/60 bg-muted/30 px-3 py-2.5 text-xs text-muted-foreground">
+                    <p>OutlookMail 使用已有的 Outlook 账号池，按顺序选取邮箱接收验证码。</p>
+                  </div>
+                </template>
+
                 <label class="block text-xs text-muted-foreground">默认注册数量</label>
                 <input
                   v-model.number="localSettings.basic.register_default_count"
@@ -500,6 +514,7 @@ watch(settings, (value) => {
   next.basic.gptmail_domain = typeof next.basic.gptmail_domain === 'string'
     ? next.basic.gptmail_domain
     : ''
+  next.basic.outlookmail_base_url = next.basic.outlookmail_base_url || 'http://your-outlook-api.com'
   next.retry = next.retry || {}
   next.retry.auto_refresh_accounts_seconds = Number.isFinite(next.retry.auto_refresh_accounts_seconds)
     ? next.retry.auto_refresh_accounts_seconds

@@ -6,6 +6,7 @@ from core.duckmail_client import DuckMailClient
 from core.freemail_client import FreemailClient
 from core.gptmail_client import GPTMailClient
 from core.moemail_client import MoemailClient
+from core.outlookmail_client import OutlookMailClient
 
 
 def create_temp_mail_client(
@@ -63,6 +64,16 @@ def create_temp_mail_client(
             proxy=proxy,
             verify_ssl=verify_ssl if verify_ssl is not None else config.basic.gptmail_verify_ssl,
             domain=domain or config.basic.gptmail_domain,
+            log_callback=log_cb,
+        )
+
+    if provider == "outlookmail":
+        effective_base_url = base_url or config.basic.outlookmail_base_url
+        if no_proxy_matches(extract_host(effective_base_url), no_proxy):
+            proxy = ""
+        return OutlookMailClient(
+            base_url=effective_base_url,
+            proxy=proxy,
             log_callback=log_cb,
         )
 
