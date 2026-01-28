@@ -106,6 +106,7 @@ class RetryConfig(BaseModel):
     videos_rate_limit_cooldown_seconds: int = Field(default=14400, ge=3600, le=86400, description="Videos 429 cooldown (seconds)")
     session_cache_ttl_seconds: int = Field(default=3600, ge=0, le=86400, description="会话缓存时间（秒，0表示禁用缓存）")
     auto_refresh_accounts_seconds: int = Field(default=60, ge=0, le=600, description="自动刷新账号间隔（秒，0禁用）")
+    scheduled_refresh_enabled: bool = Field(default=False, description="是否启用定时刷新账号")
 
 class PublicDisplayConfig(BaseModel):
     """公开展示配置"""
