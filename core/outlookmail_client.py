@@ -148,6 +148,7 @@ class OutlookMailClient:
             )
             self._log("info", f"📨 收到 {len(emails)} 封邮件，开始检查验证码...")
 
+            skipped = 0
             for idx, msg in enumerate(emails, 1):
                 # 时间过滤
                 if since_time:
@@ -159,7 +160,7 @@ class OutlookMailClient:
                                 received_time.replace("Z", "+00:00")
                             ).astimezone().replace(tzinfo=None)
                             if msg_time < since_time:
-                                self._log("info", f"⏭️ 邮件 {idx} 时间过早，跳过")
+                                skipped += 1
                                 continue
                         except Exception:
                             pass
@@ -174,6 +175,8 @@ class OutlookMailClient:
                     self._log("info", f"✅ 找到验证码: {code}")
                     return code
 
+            if skipped:
+                self._log("info", f"⏭️ 跳过 {skipped} 封旧邮件")
             self._log("warning", "⚠️ 所有邮件中均未找到验证码")
             return None
 
