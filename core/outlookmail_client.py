@@ -50,7 +50,7 @@ class OutlookMailClient:
             method,
             url,
             proxies=proxies,
-            timeout=kwargs.pop("timeout", 15),
+            timeout=kwargs.pop("timeout", 120),  # 超时改为 120 秒
             **kwargs,
         )
         self._log("info", f"📥 收到响应: HTTP {res.status_code}")
