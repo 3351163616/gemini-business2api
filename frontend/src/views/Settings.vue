@@ -97,9 +97,6 @@
                 <label class="col-span-2 text-xs text-muted-foreground">账户切换次数</label>
                 <input v-model.number="localSettings.retry.max_account_switch_tries" type="number" min="1" class="col-span-2 rounded-2xl border border-input bg-background px-3 py-2" />
 
-                <label class="col-span-2 text-xs text-muted-foreground">失败阈值</label>
-                <input v-model.number="localSettings.retry.account_failure_threshold" type="number" min="1" class="col-span-2 rounded-2xl border border-input bg-background px-3 py-2" />
-
                 <label class="col-span-2 text-xs text-muted-foreground">对话冷却（小时）</label>
                 <input v-model.number="textRateLimitCooldownHours" type="number" min="1" max="24" step="1" class="col-span-2 rounded-2xl border border-input bg-background px-3 py-2" />
 
@@ -296,7 +293,10 @@
 
           <div class="space-y-4">
             <div class="rounded-2xl border border-border bg-card p-4">
-              <p class="text-xs uppercase tracking-[0.3em] text-muted-foreground">图像生成</p>
+              <div class="flex items-center gap-2">
+                <p class="text-xs uppercase tracking-[0.3em] text-muted-foreground">图像生成</p>
+                <HelpTip text="不建议开启图像生成功能，容易思考不出图，建议用gemini-imagen" />
+              </div>
               <div class="mt-4 space-y-3">
                 <Checkbox v-model="localSettings.image_generation.enabled">
                   启用图像生成

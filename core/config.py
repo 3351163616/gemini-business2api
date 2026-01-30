@@ -74,9 +74,9 @@ class BasicConfig(BaseModel):
 
 class ImageGenerationConfig(BaseModel):
     """图片生成配置"""
-    enabled: bool = Field(default=True, description="是否启用图片生成")
+    enabled: bool = Field(default=False, description="是否启用图片生成")
     supported_models: List[str] = Field(
-        default=["gemini-3-pro-preview"],
+        default=[],
         description="支持图片生成的模型列表"
     )
     output_format: str = Field(default="base64", description="图片输出格式：base64 或 url")
@@ -99,11 +99,10 @@ class RetryConfig(BaseModel):
     max_new_session_tries: int = Field(default=5, ge=1, le=20, description="新会话尝试账户数")
     max_request_retries: int = Field(default=3, ge=1, le=10, description="请求失败重试次数")
     max_account_switch_tries: int = Field(default=5, ge=1, le=20, description="账户切换尝试次数")
-    account_failure_threshold: int = Field(default=3, ge=1, le=10, description="账户失败阈值")
     rate_limit_cooldown_seconds: int = Field(default=7200, ge=3600, le=43200, description="429冷却时间（秒）")
-    text_rate_limit_cooldown_seconds: int = Field(default=7200, ge=3600, le=86400, description="Text 429 cooldown (seconds)")
-    images_rate_limit_cooldown_seconds: int = Field(default=14400, ge=3600, le=86400, description="Images 429 cooldown (seconds)")
-    videos_rate_limit_cooldown_seconds: int = Field(default=14400, ge=3600, le=86400, description="Videos 429 cooldown (seconds)")
+    text_rate_limit_cooldown_seconds: int = Field(default=7200, ge=3600, le=86400, description="对话配额冷却（秒）")
+    images_rate_limit_cooldown_seconds: int = Field(default=14400, ge=3600, le=86400, description="绘图配额冷却（秒）")
+    videos_rate_limit_cooldown_seconds: int = Field(default=14400, ge=3600, le=86400, description="视频配额冷却（秒）")
     session_cache_ttl_seconds: int = Field(default=3600, ge=0, le=86400, description="会话缓存时间（秒，0表示禁用缓存）")
     auto_refresh_accounts_seconds: int = Field(default=60, ge=0, le=600, description="自动刷新账号间隔（秒，0禁用）")
     scheduled_refresh_enabled: bool = Field(default=False, description="是否启用定时刷新账号")

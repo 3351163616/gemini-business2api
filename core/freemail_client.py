@@ -154,7 +154,6 @@ class FreemailClient:
                                 email_time = datetime.fromisoformat(created_at.replace("Z", "+00:00")).astimezone().replace(tzinfo=None)
 
                             if email_time < since_time:
-                                self._log("info", f"⏭️ 邮件 {idx} 时间过早，跳过")
                                 continue
                         except Exception:
                             pass

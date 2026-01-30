@@ -449,8 +449,8 @@ class GeminiAutomationUC:
     def _save_screenshot(self, name: str) -> None:
         """保存截图"""
         try:
-            import os
-            screenshot_dir = os.path.join("data", "automation")
+            from core.storage import _data_file_path
+            screenshot_dir = _data_file_path("automation")
             os.makedirs(screenshot_dir, exist_ok=True)
             path = os.path.join(screenshot_dir, f"{name}_{int(time.time())}.png")
             self.driver.save_screenshot(path)

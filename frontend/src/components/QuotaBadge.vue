@@ -166,6 +166,11 @@ const getStatusText = (status: QuotaStatus, type?: string) => {
     return '✅ 正常'
   }
 
+  // 如果有 reason 字段（对话配额受限导致的连带限制）
+  if (status.reason) {
+    return '⛔ 对话受限'
+  }
+
   if (status.remaining_seconds) {
     return `⏳ ${formatTime(status.remaining_seconds)}`
   }

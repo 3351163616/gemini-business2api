@@ -273,12 +273,7 @@
             <div>
               <p>冷却</p>
               <p class="mt-1" :class="cooldownClass(account)">
-                <span v-if="account.cooldown_seconds > 0">
-                  {{ formatCooldown(account.cooldown_seconds) }} · {{ account.cooldown_reason }}
-                </span>
-                <span v-else>
-                  {{ account.cooldown_reason || '无冷却' }}
-                </span>
+                {{ cooldownDisplay(account) }}
               </p>
             </div>
             <div>
@@ -396,13 +391,8 @@
                 <QuotaBadge v-if="account.quota_status" :quota-status="account.quota_status" />
                 <span v-else class="text-xs text-muted-foreground">-</span>
               </td>
-              <td class="py-4 pr-6 text-xs">
-                <span v-if="account.cooldown_seconds > 0" :class="cooldownClass(account)">
-                  {{ formatCooldown(account.cooldown_seconds) }} · {{ account.cooldown_reason }}
-                </span>
-                <span v-else :class="cooldownClass(account)">
-                  {{ account.cooldown_reason || '无冷却' }}
-                </span>
+              <td class="py-4 pr-6 text-xs" :class="cooldownClass(account)">
+                {{ cooldownDisplay(account) }}
               </td>
               <td class="py-4 pr-6 text-xs text-muted-foreground">
                 {{ account.failure_count }}
@@ -1259,7 +1249,6 @@ const statusOptions = [
   { label: '即将过期', value: '即将过期' },
   { label: '已过期', value: '已过期' },
   { label: '手动禁用', value: '手动禁用' },
-  { label: '错误禁用', value: '错误禁用' },
   { label: '429限流', value: '429限流' },
 ]
 
@@ -2213,9 +2202,6 @@ const statusLabel = (account: AdminAccount) => {
   if (account.cooldown_reason?.includes('429') && account.cooldown_seconds > 0) {
     return '429限流'
   }
-  if (account.cooldown_reason === '错误禁用') {
-    return '错误禁用'
-  }
   if (account.disabled) {
     return '手动禁用'
   }
@@ -2233,7 +2219,7 @@ const statusClass = (account: AdminAccount) => {
   if (status === '429限流' || status === '即将过期') {
     return 'bg-amber-200 text-amber-900'
   }
-  if (status === '错误禁用' || status === '已过期') {
+  if (status === '已过期') {
     return 'bg-destructive/10 text-destructive'
   }
   if (status === '手动禁用') {
@@ -2246,7 +2232,7 @@ const shouldShowEnable = (account: AdminAccount) => {
   if (account.cooldown_reason?.includes('429') && account.cooldown_seconds > 0) {
     return true
   }
-  return account.disabled || account.cooldown_reason === '错误禁用'
+  return account.disabled
 }
 
 const displayRemaining = (value: string) => {
@@ -2269,9 +2255,31 @@ const formatCooldown = (seconds: number) => {
 }
 
 const cooldownClass = (account: AdminAccount) => {
-  if (account.cooldown_seconds > 0) return 'text-amber-700'
-  if (account.cooldown_reason === '错误禁用') return 'text-rose-600'
-  return 'text-muted-foreground'
+  // 配额冷却：黄色（警告）
+  if (account.cooldown_seconds > 0) {
+    return 'text-yellow-600'
+  }
+  // 手动禁用：灰色
+  if (account.disabled) {
+    return 'text-muted-foreground'
+  }
+  // 正常：绿色
+  return 'text-emerald-600'
+}
+
+const cooldownDisplay = (account: AdminAccount) => {
+  // 有冷却时间：显示倒计时 + 原因
+  if (account.cooldown_seconds > 0) {
+    return `${formatCooldown(account.cooldown_seconds)} · ${account.cooldown_reason || '冷却中'}`
+  }
+
+  // 手动禁用
+  if (account.disabled) {
+    return '⛔ 手动禁用'
+  }
+
+  // 正常可用
+  return '✅ 正常'
 }
 
 const rowClass = (account: AdminAccount) => {

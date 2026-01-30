@@ -3,6 +3,7 @@
 export interface QuotaStatus {
   available: boolean
   remaining_seconds?: number
+  reason?: string  // 受限原因（如"对话配额受限"）
 }
 
 export interface AccountQuotaStatus {

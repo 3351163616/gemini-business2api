@@ -183,7 +183,6 @@ class DuckMailClient:
                         # 转换 UTC 时间到本地时区
                         msg_time = datetime.fromisoformat(created_at.replace("Z", "+00:00")).astimezone().replace(tzinfo=None)
                         if msg_time < since_time:
-                            self._log("info", f"⏭️ 邮件 {idx} 时间过早，跳过")
                             continue
 
                 self._log("info", f"🔍 正在读取邮件 {idx}/{len(messages)} (ID: {msg_id[:10]}...)")
